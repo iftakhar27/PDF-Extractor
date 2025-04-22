@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: PDF-Extractor.Server/Dockerfile
+    ports:
+      - "5000:80"  # Map port 5000 on your machine to port 80 in the container
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=PDFExtractor;User Id=sa;Password=Umar2407;
+    networks:
+      - pdf-extractor
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Umar2407
+    ports:
+      - "1433:1433"
+    networks:
+      - pdf-extractor
+
+networks:
+  pdf-extractor:
+    driver: bridge
+

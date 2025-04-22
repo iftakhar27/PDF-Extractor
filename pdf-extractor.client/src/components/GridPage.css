@@ -1,0 +1,47 @@
+.grid-page {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #1f2937;
+}
+
+.loading, .error, .no-data {
+    text-align: center;
+    font-size: 16px;
+    color: #6b7280;
+    margin-top: 20px;
+}
+
+.grid-container {
+    display: grid;
+    gap: 8px;
+}
+
+.grid-header, .grid-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 2fr 1fr;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+.grid-header {
+    font-weight: bold;
+    background-color: #e0e7ff;
+    color: #1e3a8a;
+}
+
+.grid-row:hover {
+    background-color: #f3f4f6;
+    transition: background 0.2s ease-in-out;
+}

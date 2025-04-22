@@ -1,0 +1,20 @@
+# Use official .NET SDK image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy and restore project
+COPY . .
+RUN dotnet restore "PDF-Extractor.Server/PDF-Extractor.Server.csproj"
+
+# Build and publish
+RUN dotnet publish "PDF-Extractor.Server/PDF-Extractor.Server.csproj" -c Release -o /app/publish
+
+# Final stage
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "PDF-Extractor.dll"]
