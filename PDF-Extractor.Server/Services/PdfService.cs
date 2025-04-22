@@ -1,5 +1,7 @@
 ﻿using iText.Forms;
 using iText.Kernel.Pdf;
+using Microsoft.EntityFrameworkCore;
+using PFD_Extractor.Server.Data;
 using PFD_Extractor.Server.Models;
 using System.Text;
 
@@ -8,7 +10,12 @@ namespace PFD_Extractor.Server.Services
 {
     public class PdfService
     {
-        public PdfService() { }
+        private readonly ApplicationDbContext _context;
+
+        public PdfService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public async Task<PdfMetadata> ExtractMetadataAsync(IFormFile file)
         {
             var result = new Dictionary<string, string>();
@@ -38,6 +45,14 @@ namespace PFD_Extractor.Server.Services
             };
             return pdfMetadata;
         }
+
+        public async Task<List<PdfMetadata>> SearchPdfsAsync(string query)
+        {
+            var searchQuery = query.ToLower();
+            return await _context.PdfMetadata
+                .Where(p => p.Title.ToLower().Contains(searchQuery) || p.Author.ToLower().Contains(searchQuery))
+                .ToListAsync();
+        }
         private string ExtractValue(string content, string label)
         {
             var start = content.IndexOf(label);
@@ -47,5 +62,6 @@ namespace PFD_Extractor.Server.Services
             if (end == -1) end = content.Length;
             return content.Substring(start, end - start).Trim();
         }
+
     }
 }

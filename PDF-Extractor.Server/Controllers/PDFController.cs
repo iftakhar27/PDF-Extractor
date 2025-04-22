@@ -45,34 +45,22 @@ namespace PFD_Extractor.Server.Controllers
             return Ok(metadataList);
         }
 
-
-        [HttpGet("metadata1")]
-        public IActionResult GetMataData()
+        [HttpGet("search")]
+        public async Task<ActionResult<List<PdfMetadata>>> SearchPdfs(string query)
         {
-            var documents = new List<PdfMetadata>();
-            var connectionString = _configuration.GetConnectionString("DefaultConnection");
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            if (string.IsNullOrWhiteSpace(query))
             {
-                conn.Open();
-                var query = "SELECT Id, Title, Author FROM PdfMetadata";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        documents.Add(new PdfMetadata
-                        {
-                            //Id = reader.GetInt32(0),
-                            //Title = reader.GetString(1),
-                            //Author = reader.GetString(2)
-                        });
-                    }
-                }
+                return BadRequest("Search query cannot be empty.");
             }
 
-            return Ok(documents);
+            var result = await _pdfService.SearchPdfsAsync(query);
+
+            if (!result.Any())
+            {
+                return NotFound("No PDFs found.");
+            }
+
+            return Ok(result);
         }
     }
 }
