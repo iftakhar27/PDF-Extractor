@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import {
     Container,
     Typography,
@@ -20,6 +20,7 @@ function FileUpload() {
     const [selectedFile, setSelectedFile] = useState(null);
     const [metadataList, setMetadataList] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const fileInputRef = useRef(null);
 
     // Fetch metadata from the API
     useEffect(() => {
@@ -52,6 +53,10 @@ function FileUpload() {
         if (response.ok) {
             const newMeta = await response.json();
             setMetadataList((prev) => [...prev, newMeta]);
+            setSelectedFile(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
+            }
         } else {
             alert("Upload failed. Please try again.");
         }
@@ -88,6 +93,7 @@ function FileUpload() {
                         type="file"
                         inputProps={{ accept: "application/pdf" }}
                         onChange={handleFileChange}
+                        inputRef={fileInputRef}
                     />
                     <Button variant="contained" onClick={handleUpload}>
                         Upload
