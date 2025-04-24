@@ -9,6 +9,11 @@ import {
     ListItemText,
     Input,
     Paper,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
 } from "@mui/material";
 
 function FileUpload() {
@@ -19,7 +24,7 @@ function FileUpload() {
     // Fetch metadata from the API
     useEffect(() => {
         console.log("calling metadata");
-        fetch("https://localhost:32775/api/pdf/metadata")
+        fetch("https://localhost:32781/api/pdf/metadata")
             .then((res) => res.json())
             .then((data) => setMetadataList(data))
             .catch((error) => console.error("Error fetching metadata:", error));
@@ -39,7 +44,7 @@ function FileUpload() {
         formData.append("formFile", selectedFile);
         console.log("calling Upload");
 
-        const response = await fetch("https://localhost:32775/api/pdf/upload", {
+        const response = await fetch("https://localhost:32781/api/pdf/upload", {
             method: "POST",
             body: formData,
         });
@@ -60,7 +65,7 @@ function FileUpload() {
 
         // Fetch search results from API
         const response = await fetch(
-            `https://localhost:32775/api/pdf/search?query=${encodeURIComponent(searchQuery)}`
+            `https://localhost:32781/api/pdf/search?query=${encodeURIComponent(searchQuery)}`
         );
 
         if (response.ok) {
@@ -109,19 +114,26 @@ function FileUpload() {
                     Metadata
                 </Typography>
                 <List dense>
-                    {metadataList.map((meta) => (
-                        <ListItem key={meta.id} divider>
-                            <ListItemText
-                                primary={meta.fileName}
-                                secondary={
-                                    <>
-                                        {meta.title || "N/A"} by {meta.author || "Unknown"} –{" "}
-                                        {meta.pageCount} pages
-                                    </>
-                                }
-                            />
-                        </ListItem>
-                    ))}
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell><strong>File Name</strong></TableCell>
+                                <TableCell><strong>Title</strong></TableCell>
+                                <TableCell><strong>Author</strong></TableCell>
+                                <TableCell><strong>Page Count</strong></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {metadataList.map((meta) => (
+                                <TableRow key={meta.id}>
+                                    <TableCell>{meta.fileName}</TableCell>
+                                    <TableCell>{meta.title || "N/A"}</TableCell>
+                                    <TableCell>{meta.author || "Unknown"}</TableCell>
+                                    <TableCell>{meta.pageCount}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </List>
             </Paper>
         </Container>

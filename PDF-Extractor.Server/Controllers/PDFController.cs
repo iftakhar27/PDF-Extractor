@@ -31,7 +31,7 @@ namespace PFD_Extractor.Server.Controllers
             if (formFile == null || formFile.ContentType != "application/pdf")
                 return BadRequest("Invalid file type.");
 
-            var metadata = await _pdfService.ExtractMetadataAsync(formFile);
+            var metadata = await _pdfService.ExtractPdfMetadataAsync(formFile);
             _context.PdfMetadata.Add(metadata);
             await _context.SaveChangesAsync();
 
